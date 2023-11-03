@@ -1,0 +1,15 @@
+const now = new Date();
+const utcOffset = 8;
+const philippinesTime = new Date(
+	now.getTime() + utcOffset * 60 * 60 * 1000,
+);
+const hours = philippinesTime.getHours();
+
+let greeting = "";
+if (hours >= 5 && hours < 12) {
+	greeting = "Good morning";
+} else if (hours >= 12 && hours < 18) {
+	greeting = "Good afternoon";
+} else {
+	greeting = "Good evening";
+}

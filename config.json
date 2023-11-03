@@ -1,0 +1,27 @@
+{
+  "UnsendMessage": false,
+  "userVIPs": [
+    "100058453663658",
+    "100022390280029",
+    "61551921479046",
+    "100074042400466"
+  ],
+  "maintenance": {
+    "enable": false
+  },
+  "prefix": "-",
+  "cmds": [
+    "giee",
+    "blockai",
+    "imgaiv2"
+  ],
+  "nsfw": [
+    "100058453663658",
+    ""
+  ],
+  "commands": {
+    "post": {
+      "enable": true
+    }
+  }
+}

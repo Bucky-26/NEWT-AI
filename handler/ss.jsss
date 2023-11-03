@@ -1,0 +1,102 @@
+const fs = require("fs");
+const path = require("path");
+
+
+fs.readdirSync("./commands").forEach(file => {
+	if (file.endsWith(".js")) {
+		const command = require(`./commands/${file}`);
+		commandModules[command.config.name] = command;
+	}
+});
+
+const userVIPs = config.userVIPs;
+commandModules.help = require("./commands/help.js");
+const prefix = config.prefix;
+
+
+
+
+module.exports = {
+	run: async function({ args, event, api, prefix, config }) {
+		const input = event.body.trim();
+
+		if (config.maintenance.enable && !config.userVIPs.includes(event.senderID)) {
+			api.sendMessage(
+				"The BOT is Under Maintenance.\nTo Serve You Better\n Sorry for the inconvenience.",
+				event.threadID
+			);
+			return;
+		}
+
+
+		handleCommandWithPrefix();
+
+		handleCommandWithoutPrefix();
+
+		function handleCommandWithPrefix() {
+			const parts = input.slice(prefix.length).split(" ");
+			const commandName = parts[0].toLowerCase();
+			const args = parts.slice(1);
+			const user = event.senderID;
+
+			const command = commands[commandName];
+			if (event.body.startsWith(prefix)) {
+				if (command) {
+					if (!command.config.usePrefix || event.body.startsWith(prefix)) {
+						const userPermission = config.userVIPs.includes(event.senderID) ? 1 : 0;
+						if (userPermission >= command.config.permission) {
+							if (!approved.approved.includes(event.threadID) && !userVIPs.includes(event.senderID)) {
+								api.sendMessage('Your Group Need To be Whitelisted To Use This Bot\n\nPlease Contact My Dev: https://www.facebook.com/Buckyy26', event.threadID, event.messageID);
+								return false;
+							}
+							if (banuser.includes(user)) {
+								api.sendMessage('You are Not Allow To use The Newt AI ', event.threadID, event.messageID);
+								return false;
+							}
+							if (config.maintenance.enable && !userVIPs.includes(event.senderID)) {
+								api.sendMessage("The BOT is Under Maintenance.\nTo Serve You Better\n Sorry for the inconvenience.", event.threadID);
+								return false;
+							}
+
+							command.run({ api, event, args, commandModules, config, threadlist,approved, prefix, approvedID, formatFont, banuser, ban });
+						} else {
+							api.sendMessage("You do not have permission to use this command.", event.threadID);
+						}
+					}
+				}
+			}
+		}
+
+		function handleCommandWithoutPrefix() {
+
+			const input = event.body.trim();
+			if (config.maintenance.enable && !config.userVIPs.includes(event.senderID)) {
+				api.sendMessage("The BOT is Under Maintenance.\nTo Serve You Better\n Sorry for the inconvenience.", event.threadID);
+				return;
+			}
+
+			const parts = input.split(" ");
+			const commandName = parts[0].toLowerCase();
+			const args = parts.slice(1);
+			const user = event.senderID;
+
+			const command = commands[commandName];
+
+			if (command) {
+				const userPermission = config.userVIPs.includes(user) ? 1 : 0;
+				if (command.config.usePrefix) {
+					api.sendMessage("This Command need a prefix", event.threadID, event.messageID);
+					return false;
+				}
+				if (userPermission >= command.config.permission) {
+				command.run({ api, event, args, commandModules, config, threadlist,approved, prefix, approvedID, formatFont, banuser, ban });
+				} else {
+					api.sendMessage(
+						"You do not have permission to use this command.",
+						event.threadID
+					);
+				}
+			}
+		}
+	},
+};
